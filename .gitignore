@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+workspaces/
+*.log
+.DS_Store
+
+# Infra-spezifisch (Box/Domain/Cloudflare) — NICHT im public Repo
+infra/
+
+# lokale Claude-Code-Settings
+.claude/

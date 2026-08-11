@@ -1,0 +1,32 @@
+# Prod-Compose: zieht das per CI gebaute public GHCR-Image.
+# Bindet NUR auf localhost -> hinter einen beliebigen Reverse-Proxy setzen
+# (nginx/caddy/traefik), der TLS terminiert. Secrets kommen aus .env (nicht committen).
+#
+# Update-Strategie: pull-based. Ein Scheduler (z.B. systemd-Timer) ruft periodisch
+#   docker compose -f compose.yml pull && docker compose -f compose.yml up -d
+
+services:
+  api:
+    image: ghcr.io/alphagrid-cc/claude_api:${IMAGE_TAG:-latest}
+    pull_policy: always
+    env_file: .env
+    environment:
+      WORKSPACES_DIR: /workspaces
+    volumes:
+      - claude_workspaces:/workspaces
+    ports:
+      - "127.0.0.1:8091:8000"
+    # Ressourcen-Caps, damit ein Runaway den Host nicht auslastet.
+    mem_limit: 2g
+    cpus: "1.5"
+    pids_limit: 512
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  claude_workspaces:

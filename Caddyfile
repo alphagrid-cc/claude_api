@@ -1,0 +1,18 @@
+# Ersetze deine-domain.example.com durch deine echte Domain.
+# Caddy holt und erneuert das TLS-Zertifikat automatisch (Let's Encrypt).
+# Voraussetzung: Port 80/443 erreichbar und DNS zeigt auf diesen Host.
+
+deine-domain.example.com {
+	reverse_proxy api:8000 {
+		# SSE/Streaming sofort durchreichen (kein Buffering).
+		flush_interval -1
+	}
+}
+
+# --- Lokaler Test ohne Domain (selbstsigniertes Zertifikat) ---
+# https://localhost {
+# 	tls internal
+# 	reverse_proxy api:8000 {
+# 		flush_interval -1
+# 	}
+# }

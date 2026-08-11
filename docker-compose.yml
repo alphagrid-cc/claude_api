@@ -1,0 +1,36 @@
+# Claude Code Remote API — Compose
+# Werte kommen aus .env (siehe .env.example). CLAUDE_CODE_OAUTH_TOKEN und
+# GATEWAY_TOKEN NIE ins Image bauen — nur hier zur Laufzeit injizieren.
+
+services:
+  api:
+    build: .
+    env_file: .env
+    environment:
+      WORKSPACES_DIR: /workspaces
+    volumes:
+      - workspaces:/workspaces
+    expose:
+      - "8000"          # nur intern; Zugriff ausschliesslich ueber den Proxy
+    restart: unless-stopped
+
+  # HTTPS-Reverse-Proxy mit automatischem Let's-Encrypt-Zertifikat.
+  # Fuer rein privaten Betrieb (Tailscale/VPN) kann dieser Service entfallen
+  # und stattdessen bei 'api' ein 'ports: ["127.0.0.1:8000:8000"]' gesetzt werden.
+  caddy:
+    image: caddy:2
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  workspaces:
+  caddy_data:
+  caddy_config:

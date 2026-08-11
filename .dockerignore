@@ -1,0 +1,11 @@
+.venv/
+workspaces/
+__pycache__/
+*.pyc
+.env
+.git/
+.gitignore
+*.log
+.DS_Store
+scripts/
+examples/
