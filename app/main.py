@@ -8,6 +8,7 @@ import time
 from collections import defaultdict, deque
 from contextlib import asynccontextmanager
 
+import claude_agent_sdk
 from claude_agent_sdk import ResultMessage
 from fastapi import Depends, FastAPI, Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
@@ -96,6 +97,20 @@ async def session_error_handler(request: Request, exc: SessionError):
 
 
 # ---- Health -------------------------------------------------------------
+def _versions() -> dict[str, str | None]:
+    """Laufende SDK-/CLI-Versionen (fuers Monitoring auf veraltete Images)."""
+    cli: str | None = None
+    if not settings.claude_cli_path:  # sonst laeuft eine fremde Binary
+        try:
+            from claude_agent_sdk._cli_version import __cli_version__ as cli
+        except ImportError:  # privates Modul, kann sich aendern
+            pass
+    return {"claude_agent_sdk": claude_agent_sdk.__version__, "claude_code_cli": cli}
+
+
+VERSIONS = _versions()
+
+
 @app.get("/health")
 async def health():
     return {
@@ -104,6 +119,7 @@ async def health():
         "auth_configured": bool(settings.gateway_token),
         "oauth_token_present": bool(os.environ.get("CLAUDE_CODE_OAUTH_TOKEN")),
         "active_sessions": len(manager.list()),
+        "versions": VERSIONS,
     }
 
 
@@ -117,6 +133,7 @@ async def oneshot(req: OneShotRequest):
         disallowed_tools=req.disallowed_tools,
         permission_mode=req.permission_mode,
         model=req.model,
+        effort=req.effort,
         system_prompt=req.system_prompt,
         max_turns=req.max_turns,
     )

@@ -27,6 +27,7 @@ def build_options(
     disallowed_tools: list[str] | None = None,
     permission_mode: str | None = None,
     model: str | None = None,
+    effort: str | None = None,
     system_prompt: str | None = None,
     max_turns: int | None = None,
     resume: str | None = None,
@@ -38,6 +39,9 @@ def build_options(
     model = model or settings.default_model
     if model:
         kwargs["model"] = model
+    effort = effort or settings.default_effort
+    if effort:
+        kwargs["effort"] = effort
     if allowed_tools:
         kwargs["allowed_tools"] = allowed_tools
     if disallowed_tools:

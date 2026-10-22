@@ -125,6 +125,7 @@ class SessionManager:
             disallowed_tools=req.disallowed_tools,
             permission_mode=req.permission_mode,
             model=req.model,
+            effort=req.effort,
             system_prompt=req.system_prompt,
             max_turns=req.max_turns,
         )
