@@ -82,7 +82,7 @@ All `/v1` routes require `Authorization: Bearer <GATEWAY_TOKEN>`.
 
 | Method | Path | Purpose |
 |--------|------|---------|
-| GET | `/health` | Liveness (no auth) |
+| GET | `/health` | Liveness + running SDK/CLI versions (no auth) |
 | POST | `/v1/oneshot` | Single prompt (JSON or SSE) |
 | POST | `/v1/sessions` | Create a session (optional `git_repo`) |
 | GET | `/v1/sessions` | List sessions |
@@ -117,7 +117,10 @@ A Python client example is in [examples/client.py](examples/client.py).
 ### Request parameters (excerpt)
 - `permission_mode`: `default` | `acceptEdits` | `plan` | `bypassPermissions` | `dontAsk` | `auto`
 - `allowed_tools` / `disallowed_tools`: e.g. `["Read","Bash"]`
-- `model`, `system_prompt`, `max_turns`, `workspace`, `git_repo`, `git_ref`
+- `model`: e.g. `claude-opus-5-5` (empty = `DEFAULT_MODEL`, else Claude Code's default)
+- `effort`: `low` | `medium` | `high` | `xhigh` | `max` (empty = `DEFAULT_EFFORT`, else the
+  model's default — `medium` on Opus 5.5)
+- `system_prompt`, `max_turns`, `workspace`, `git_repo`, `git_ref`
 
 ---
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Literal
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -37,6 +38,8 @@ class Settings(BaseSettings):
 
     default_permission_mode: PermissionMode = "acceptEdits"
     default_model: str | None = None
+    # low | medium | high | xhigh | max; leer = Default des Modells.
+    default_effort: Literal["low", "medium", "high", "xhigh", "max"] | None = None
 
     session_ttl_seconds: int = 3600
     max_sessions: int = 20

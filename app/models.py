@@ -10,6 +10,9 @@ PermissionMode = Literal[
     "default", "acceptEdits", "plan", "bypassPermissions", "dontAsk", "auto"
 ]
 
+# Reasoning-Effort; leer = Default des Modells (Opus 5.5: medium).
+Effort = Literal["low", "medium", "high", "xhigh", "max"]
+
 
 class OneShotRequest(BaseModel):
     prompt: str
@@ -21,6 +24,7 @@ class OneShotRequest(BaseModel):
     disallowed_tools: list[str] | None = None
     permission_mode: PermissionMode | None = None
     model: str | None = None
+    effort: Effort | None = None
     system_prompt: str | None = None
     max_turns: int | None = None
     stream: bool = False
@@ -52,6 +56,7 @@ class CreateSessionRequest(BaseModel):
     disallowed_tools: list[str] | None = None
     permission_mode: PermissionMode | None = None
     model: str | None = None
+    effort: Effort | None = None
     max_turns: int | None = None
 
 
